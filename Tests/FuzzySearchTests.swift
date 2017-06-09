@@ -148,4 +148,13 @@ class FuzzySearchTests: XCTestCase {
             _ = spanishWordsCached.fuzzyMatch("la sart")
         }
     }
+    
+    func testVeryLongMatchString() {
+        let str = "This is a test with a rather long string to test integer overflow over powering the total score of the strings x2 for every matching character"
+        
+        _=str.fuzzyMatch("This is a test with a rather long string to test integer overflow over powering the total score of the strings x2 for every matching character")
+        
+        let longerStr = str + str + str + str + str + str + str + str
+        _=longerStr.fuzzyMatch(longerStr)
+    }
 }

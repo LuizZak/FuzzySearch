@@ -107,7 +107,7 @@ extension FuzzySearchable {
         for (idx, strChar) in compareString.enumerated() {
             if let prefixLength = pattern.hasPrefix(strChar, atIndex: patternIdx) {
                 patternIdx += prefixLength
-                currScore += 1 + currScore
+                currScore += 1
                 currPart.length += 1
             } else {
                 currScore = 0
