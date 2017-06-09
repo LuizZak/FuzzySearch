@@ -157,4 +157,11 @@ class FuzzySearchTests: XCTestCase {
         let longerStr = str + str + str + str + str + str + str + str
         _=longerStr.fuzzyMatch(longerStr)
     }
+    
+    func testProperAccentFolding() {
+        // Make sure the '°' character doesn't get folded away into an empty char  
+        let str = "a°a"
+        
+        XCTAssertEqual(str.fuzzyMatch("").parts.count, 0)
+    }
 }

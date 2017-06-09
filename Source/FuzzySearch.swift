@@ -39,7 +39,8 @@ internal extension String {
         return characters.map{
             let str = String($0).lowercased()
             guard let data = str.data(using: .ascii, allowLossyConversion: true),
-                let accentFoldedStr = String(data: data, encoding: .ascii) else {
+                let accentFoldedStr = String(data: data, encoding: .ascii),
+                !accentFoldedStr.isEmpty else {
                 return CharOpts(ch: str, normalized: str)
             }
             return CharOpts(ch: str, normalized: accentFoldedStr)
