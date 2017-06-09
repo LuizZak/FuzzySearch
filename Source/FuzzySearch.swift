@@ -77,7 +77,7 @@ public protocol FuzzySearchable {
 /// This allows for improved performance when fuzzy-searching multiple times 
 /// objects that don't change the contents of `fuzzyStringToMatch` too often.
 public struct CachedFuzzySearchable<T> : FuzzySearchable where T : FuzzySearchable {
-    internal let searchable: T
+    public let searchable: T
     internal let fuzzyCache: FuzzyCache
     
     public init(wrapping searchable: T) {
