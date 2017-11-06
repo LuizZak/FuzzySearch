@@ -36,7 +36,7 @@ public struct FuzzyTokens {
 
 internal extension String {
     func tokenize() -> [CharOpts] {
-        return characters.map{
+        return map {
             let str = String($0).lowercased()
             guard let data = str.data(using: .ascii, allowLossyConversion: true),
                 let accentFoldedStr = String(data: data, encoding: .ascii),
@@ -51,7 +51,7 @@ internal extension String {
     func hasPrefix(_ prefix: CharOpts, atIndex index: Int) -> Int? {
         for pfx in [prefix.ch, prefix.normalized] {
             if (self as NSString).substring(from: index).hasPrefix(pfx) {
-                return pfx.characters.count
+                return pfx.count
             }
         }
         return nil
@@ -123,7 +123,7 @@ extension FuzzySearchable {
             parts.append(currPart)
         }
         
-        if patternIdx == pattern.characters.count {
+        if patternIdx == pattern.count {
             // if all pattern chars were found
             return FuzzySearchResult(weight: totalScore, parts: parts)
         } else {
@@ -140,6 +140,8 @@ extension FuzzySearchable {
 
 extension CachedFuzzySearchable {
     func fuzzyTokenized() -> FuzzyTokens {
+        objc_sync_enter(fuzzyCache); defer { objc_sync_exit(fuzzyCache); }
+        
         // Re-create fuzzy cache, if stale
         if fuzzyCache.hash == nil || fuzzyCache.hash != fuzzyStringToMatch.hashValue {
             let tokens = fuzzyStringToMatch.tokenize()
@@ -173,11 +175,11 @@ public extension CachedFuzzySearchable {
 
 public extension Collection where Iterator.Element: FuzzySearchable {
     func fuzzyMatch(_ pattern: String) -> [(item: Iterator.Element, result: FuzzySearchResult)] {
-        return map{
+        return map {
             (item: $0, result: $0.fuzzyMatch(pattern))
-        }.filter{
+        }.filter {
             $0.result.weight > 0
-        }.sorted{
+        }.sorted {
             $0.result.weight > $1.result.weight
         }
     }
